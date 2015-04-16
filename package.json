@@ -1,0 +1,19 @@
+{
+  "name": "related",
+  "main": "./lib/related",
+  "version": "0.0.0",
+  "description": "Navigate quickly between related files in your project",
+  "activationCommands": {
+    "atom-workspace": "related:showRelated"
+  },
+  "repository": "https://github.com/nick125/related",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+    "fs-plus": "2.x",
+    "glob": "5.x",
+    "atom-space-pen-views": "2.x"
+  }
+}

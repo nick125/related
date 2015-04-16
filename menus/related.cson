@@ -1,0 +1,14 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Related'
+      'submenu': [
+        {
+          'label': 'Show related files'
+          'command': 'related:showRelated'
+        }
+      ]
+    ]
+  }
+]
