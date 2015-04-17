@@ -40,7 +40,7 @@ class PathMatcher
     # really should've already been done)
     loadPatterns() if not @patterns
 
-    matches = (p for p in @patterns when pattern.isMatch(currentPath))
+    matches = (p for p in @patterns when p.isMatch(currentPath))
     resolvedPaths = (pattern.getResults(currentPath) for pattern in matches)
     flatMatches = [].concat (resolvedPaths)...
 
