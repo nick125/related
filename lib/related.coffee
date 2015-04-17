@@ -9,12 +9,13 @@ module.exports =
   pathMatcher: null
 
   activate: () ->
-    @subscriptions = new CompositeDisposable
-    @setupEvents()
+    @subscriptions = new CompositeDisposable()
     @pathMatcher = new PathMatcher()
 
     @configWatcher = new ConfigWatcher()
     @configWatcher.setupConfig((config) => @pathMatcher.loadPatterns(config))
+
+    @setupEvents()
 
   setupEvents: () ->
     @subscriptions.add(atom.commands.add('atom-workspace',
