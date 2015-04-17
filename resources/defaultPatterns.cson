@@ -1,0 +1,17 @@
+##########################################################################
+# Related uses a set of patterns to populate a list of files related     #
+# to the one you're currently in. There are two components of a pattern: #
+# the matcher and the results.                                           #
+#                                                                        #
+# The matcher is a regular expression. You can use capture groups and    #
+# refer to them in your results. The matcher is given the path of the    #
+# current file, relative to the top-level directory. For instance, a     #
+# file located at /Users/foo/bar/test.txt, with the foo directory opened #
+# in the editor, would use the filename 'bar/test.txt' when comparing    #
+# with the matcher.                                                      #
+#                                                                        #
+# The results are list of files that will be searched whenever the       #
+# current file matches the matcher. You can refer to the capture groups  #
+# using $n (e.g., $1, $2, etc). You may also use glob patterns in your   #
+# results                                                                #
+##########################################################################

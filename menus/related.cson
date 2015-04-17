@@ -7,6 +7,10 @@
         {
           'label': 'Show related files'
           'command': 'related:showRelated'
+        },
+        {
+          'label': 'Edit related patterns',
+          'command': 'related:editConfig'
         }
       ]
     ]
