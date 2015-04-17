@@ -8,7 +8,8 @@ class RelatedViewSelect extends SelectListView
   viewForItem: (item) ->
     """
     <li>
-      #{item.realPath}
+      <div>#{item.displayPath}</div>
+      <div><small>#{item.realPath}</small></div>
     </li>
     """
 
