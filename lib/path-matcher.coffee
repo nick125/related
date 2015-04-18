@@ -1,11 +1,13 @@
-fs = require 'fs'
-glob = require 'glob'
-path = require 'path'
-q = require 'q'
+fs = require('fs')
+glob = require('glob')
+path = require('path')
+q = require('q')
 
 fixPath = (orig, regex) ->
   sep = if regex then path.sep.replace('\\', '\\\\') else path.sep
   orig.replace('/', sep)
+
+qglob = q.nfbind(glob.glob)
 
 class Pattern
   constructor: (matcher, outputs) ->
@@ -18,13 +20,12 @@ class Pattern
   getResults: (inputPath) ->
     inputPath.replace(@matcher, pattern) for pattern in @outputs
 
-getFilesystemMatches = (root, filePattern) ->
+fsFilterMatches = (root, filePattern) ->
   expandedPath = path.join(root, filePattern)
-  if (filePattern.indexOf("*") >= 0)
-    matches = glob.sync(expandedPath)
-    match for match in matches when fs.statSync(match).isFile
-  else
-    if fs.existsSync(expandedPath) then [expandedPath] else []
+
+  qglob(expandedPath).then((matches) ->
+    (match for match in matches when fs.statSync(match).isFile)
+  )
 
 class PathMatcher
   constructor: ->
@@ -51,13 +52,15 @@ class PathMatcher
 
     matches = (p for p in @patterns when p.isMatch(currentPath))
     resolvedPaths = (pattern.getResults(currentPath) for pattern in matches)
-    flatMatches = [].concat (resolvedPaths)...
+    flatMatches = [].concat((resolvedPaths)...)
 
-    [].concat (getFilesystemMatches(root, match) for match in flatMatches)...
+    q.all(
+      ([].concat((fsFilterMatches(root, match) for match in flatMatches)...))...
+    )
 
-  waitOnPatternLoad: () ->
+  waitOnPatternLoad: ->
     if @hasLoadedPatterns
-      q()
+      return q()
 
     deferred = q.defer()
     @waitingOnPatternLoad.push(deferred)

@@ -1,9 +1,9 @@
-{SelectListView} = require 'atom-space-pen-views'
+{SelectListView} = require('atom-space-pen-views')
 
 class RelatedViewSelect extends SelectListView
   initialize: (@pathMatcher) ->
     super
-    @addClass 'overlay from-top'
+    @addClass('overlay from-top')
 
   viewForItem: (item) ->
     """
@@ -49,12 +49,14 @@ class RelatedViewSelect extends SelectListView
   populate: ->
     currentPath = atom.workspace.getActiveTextEditor().getPath()
     if currentPath
-      root = @getRoot currentPath, atom.project?.getPaths()
+      root = @getRoot(currentPath, atom.project?.getPaths())
       newPath = path.relative(root, currentPath)
 
-      matches = (@processItem(item) for item in @pathMatcher.findMatches(root, newPath))
+      @pathMatcher.findMatches(root, newPath).done((items) =>
+        matches = (@processItem(item) for item in items)
 
-      @setItems(matches)
+        @setItems(matches)
+      )
 
       return true
     else
