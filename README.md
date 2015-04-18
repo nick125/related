@@ -19,5 +19,5 @@ can match multiple patterns.
 By default, Related uses ctrl+shift+r.
 
 ## Configuration
-Related doesn't come with a default pattern set. To add a pattern, see the "Edit patterns"
-options under the Packages -> Related menu.
+Related doesn't come with a default pattern set, but there are some examples in the examples/ directory. To add a pattern,
+see the "Edit related patterns" options under the Packages -> Related menu.

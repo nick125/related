@@ -4,11 +4,11 @@
 {PathMatcher} = require('./path-matcher')
 {ConfigWatcher} = require('./config-watcher')
 
-module.exports =
+class Related
   subscriptions: null
   pathMatcher: null
 
-  activate: =>
+  activate: ->
     @subscriptions = new CompositeDisposable()
     @pathMatcher = new PathMatcher()
 
@@ -17,20 +17,23 @@ module.exports =
 
     @setupEvents()
 
-  setupEvents: =>
+  setupEvents: ->
     @subscriptions.add(atom.commands.add('atom-workspace',
-      'related:showRelated': => @showRelated()))
+      'related:show-related-files': => @showRelated()))
     @subscriptions.add(atom.commands.add('atom-workspace',
-      'related:editConfig': => @editConfig()))
+      'related:edit-related-patterns': => @editConfig()))
 
-  deactivate: =>
+  deactivate: ->
     @subscriptions.dispose()
 
-  showRelated: =>
+  showRelated: ->
     @view ?= new RelatedViewSelect(@pathMatcher)
     @pathMatcher.waitOnPatternLoad().then(=>
       @view.toggle()
     )
 
-  editConfig: =>
+  editConfig: ->
     @configWatcher.editConfig()
+
+module.exports =
+  new Related()

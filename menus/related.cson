@@ -6,11 +6,11 @@
       'submenu': [
         {
           'label': 'Show related files'
-          'command': 'related:showRelated'
+          'command': 'related:show-related-files'
         },
         {
           'label': 'Edit related patterns',
-          'command': 'related:editConfig'
+          'command': 'related:edit-related-patterns'
         }
       ]
     ]

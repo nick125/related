@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Navigate quickly between related files in your project",
   "activationCommands": {
-    "atom-workspace": ["related:showRelated", "related:editConfig"]
+    "atom-workspace": ["related:show-related-files", "related:edit-related-patterns"]
   },
   "repository": "https://github.com/nick125/related",
   "license": "MIT",

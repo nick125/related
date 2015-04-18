@@ -23,8 +23,14 @@ class Pattern
 fsFilterMatches = (root, filePattern) ->
   expandedPath = path.join(root, filePattern)
 
+  console.log("Checking path #{root}/#{filePattern}")
+
   qglob(expandedPath).then((matches) ->
+    console.log("Got matches #{matches}; checking FS")
     (match for match in matches when fs.statSync(match).isFile)
+  ).then((matches) ->
+    console.log("Got matches #{matches}")
+    return matches
   )
 
 class PathMatcher
@@ -55,7 +61,10 @@ class PathMatcher
     flatMatches = [].concat((resolvedPaths)...)
 
     q.all(
-      ([].concat((fsFilterMatches(root, match) for match in flatMatches)...))...
+      [].concat((fsFilterMatches(root, match) for match in flatMatches)...)
+    ).then((results) ->
+      # Flatten the results of q.all into a single array
+      [].concat(results...)
     )
 
   waitOnPatternLoad: ->
