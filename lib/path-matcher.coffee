@@ -23,13 +23,9 @@ class Pattern
 fsFilterMatches = (root, filePattern) ->
   expandedPath = path.join(root, filePattern)
 
-  console.log("Checking path #{root}/#{filePattern}")
-
   qglob(expandedPath).then((matches) ->
-    console.log("Got matches #{matches}; checking FS")
     (match for match in matches when fs.statSync(match).isFile)
   ).then((matches) ->
-    console.log("Got matches #{matches}")
     return matches
   )
 
