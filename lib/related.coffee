@@ -1,14 +1,14 @@
-{CompositeDisposable} = require 'atom'
+{CompositeDisposable} = require('atom')
 
-{RelatedViewSelect} = require './related-view'
-{PathMatcher} = require './path-matcher'
-{ConfigWatcher} = require './config-watcher'
+{RelatedViewSelect} = require('./related-view')
+{PathMatcher} = require('./path-matcher')
+{ConfigWatcher} = require('./config-watcher')
 
 module.exports =
   subscriptions: null
   pathMatcher: null
 
-  activate: () ->
+  activate: =>
     @subscriptions = new CompositeDisposable()
     @pathMatcher = new PathMatcher()
 
@@ -17,20 +17,20 @@ module.exports =
 
     @setupEvents()
 
-  setupEvents: () ->
+  setupEvents: =>
     @subscriptions.add(atom.commands.add('atom-workspace',
       'related:showRelated': => @showRelated()))
     @subscriptions.add(atom.commands.add('atom-workspace',
       'related:editConfig': => @editConfig()))
 
-  deactivate: ->
+  deactivate: =>
     @subscriptions.dispose()
 
-  showRelated: () ->
+  showRelated: =>
     @view ?= new RelatedViewSelect(@pathMatcher)
     @pathMatcher.waitOnPatternLoad().then(=>
       @view.toggle()
     )
 
-  editConfig: () ->
+  editConfig: =>
     @configWatcher.editConfig()
