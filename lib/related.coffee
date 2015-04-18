@@ -28,7 +28,9 @@ module.exports =
 
   showRelated: () ->
     @view ?= new RelatedViewSelect(@pathMatcher)
-    @view.toggle()
+    @pathMatcher.waitOnPatternLoad().then(=>
+      @view.toggle()
+    )
 
   editConfig: () ->
     @configWatcher.editConfig()

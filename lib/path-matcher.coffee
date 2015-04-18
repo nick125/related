@@ -1,6 +1,7 @@
 fs = require 'fs'
 glob = require 'glob'
 path = require 'path'
+q = require 'q'
 
 fixPath = (orig, regex) ->
   sep = if regex then path.sep.replace('\\', '\\\\') else path.sep
@@ -27,6 +28,8 @@ getFilesystemMatches = (root, filePattern) ->
 
 class PathMatcher
   constructor: ->
+    @waitingOnPatternLoad = []
+    @hasLoadedPatterns = false
     @patterns = []
 
   loadPatterns: (patterns) ->
@@ -34,6 +37,12 @@ class PathMatcher
 
     for input, outputs of patterns
       @patterns.push(new Pattern(input, outputs))
+
+    @hasLoadedPatterns = true
+    for waiter in @waitingOnPatternLoad
+      waiter.resolve()
+
+    @waitingOnPatternLoad.length = 0
 
   findMatches: (root, currentPath) ->
     # Load the patterns if we haven't already (but this
@@ -45,6 +54,15 @@ class PathMatcher
     flatMatches = [].concat (resolvedPaths)...
 
     [].concat (getFilesystemMatches(root, match) for match in flatMatches)...
+
+  waitOnPatternLoad: () ->
+    if @hasLoadedPatterns
+      q()
+
+    deferred = q.defer()
+    @waitingOnPatternLoad.push(deferred)
+
+    deferred.promise
 
 module.exports =
   PathMatcher: PathMatcher
