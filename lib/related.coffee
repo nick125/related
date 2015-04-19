@@ -5,6 +5,12 @@
 {ConfigWatcher} = require('./config-watcher')
 
 class Related
+  config:
+    openSingleItemAutomatically:
+      type: 'boolean'
+      default: false
+      description: 'If only a single file matches, automatically open that item instead of prompting'
+
   subscriptions: null
   pathMatcher: null
 

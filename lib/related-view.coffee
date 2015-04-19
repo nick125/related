@@ -29,14 +29,15 @@ class RelatedViewSelect extends SelectListView
     @focusFilterEditor()
 
   hide: ->
-    @panel.hide()
+    @panel?.hide()
 
   toggle: ->
     if @panel?.isVisible()
       @cancel()
     else
-      if @populate()
-        @show()
+      @populate().then((shouldShow) =>
+        @show() if shouldShow
+      )
 
   getRoot: (filename, paths) ->
     for pathName in paths
@@ -52,15 +53,18 @@ class RelatedViewSelect extends SelectListView
       root = @getRoot(currentPath, atom.project?.getPaths())
       newPath = path.relative(root, currentPath)
 
-      @pathMatcher.findMatches(root, newPath).done((items) =>
+      return @pathMatcher.findMatches(root, newPath).done((items) =>
         matches = (@processItem(item) for item in items)
 
-        @setItems(matches)
+        if (matches.length is 1)
+          @confirmed(matches[0])
+          return false
+        else
+          @setItems(matches)
+          return true
       )
 
-      return true
-    else
-      return false
+    return q(false)
 
   cancelled: ->
     @hide()
