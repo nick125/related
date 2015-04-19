@@ -35,7 +35,7 @@ class RelatedViewSelect extends SelectListView
     if @panel?.isVisible()
       @cancel()
     else
-      @populate().then((shouldShow) =>
+      @populate().done((shouldShow) =>
         @show() if shouldShow
       )
 
@@ -53,10 +53,10 @@ class RelatedViewSelect extends SelectListView
       root = @getRoot(currentPath, atom.project?.getPaths())
       newPath = path.relative(root, currentPath)
 
-      return @pathMatcher.findMatches(root, newPath).done((items) =>
+      return @pathMatcher.findMatches(root, newPath).then((items) =>
         matches = (@processItem(item) for item in items)
 
-        if (matches.length is 1)
+        if (matches.length is 1 and atom.config.get('related.openSingleItemAutomatically'))
           @confirmed(matches[0])
           return false
         else
