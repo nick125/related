@@ -3,12 +3,12 @@
 
 # EXAMPLE:
 # lib/foo.coffee => spec/foo-spec.coffee
-".+/(.+)\\.(.+)": [
-  "spec/$1-spec.$2"
+'.+/((?:(?!-spec).)*)\\.(.+)': [
+  'spec/$1-spec.$2#create'
 ]
 
 # EXAMPLE:
 # spec/foo-spec.coffee => lib/foo.coffee
-".+/(.+)-spec\\.(.+)": [
-  "*/$1.$2"
+'.+/(.+)-spec\\.(.+)': [
+  '*/$1.$2'
 ]

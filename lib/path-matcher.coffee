@@ -9,27 +9,44 @@ fixPath = (orig, regex) ->
 
 qglob = q.nfbind(glob.glob)
 
+class OutputPattern
+  @patternParse: /([^#]+)#?(.*)/
+
+  constructor: (@matcher, pattern) ->
+    matches = OutputPattern.patternParse.exec(pattern)
+
+    @pattern = fixPath(matches[1])
+    @flags = if matches[2] then (matches[2].split('#')) else []
+
+  isCreate: ->
+    'create' in @flags
+
+  execute: (inputPath) ->
+    inputPath.replace(@matcher, @pattern)
+
 class Pattern
   constructor: (matcher, outputs) ->
     @matcher = new RegExp(fixPath(matcher, true))
-    @outputs = (fixPath(outputPattern) for outputPattern in outputs)
+    @outputs = (new OutputPattern(@matcher, output) for output in outputs)
 
   isMatch: (inputPath) ->
     @matcher.exec(inputPath)
-
-  getResults: (inputPath) ->
-    inputPath.replace(@matcher, pattern) for pattern in @outputs
 
 fsFilterMatches = (root, filePattern) ->
   expandedPath = path.join(root, filePattern)
 
   qglob(expandedPath).then((matches) ->
-    (match for match in matches when fs.statSync(match).isFile)
+    (match for match in matches when fs.statSync(match).isFile())
   ).then((matches) ->
     return matches
   )
 
 class PathMatcher
+  @parsePathResult: (outputPath, exists) ->
+    fsPath: outputPath
+    fileName: path.basename(outputPath)
+    exists: exists
+
   constructor: ->
     @waitingOnPatternLoad = []
     @hasLoadedPatterns = false
@@ -52,12 +69,29 @@ class PathMatcher
     # really should've already been done)
     loadPatterns() if not @patterns
 
-    matches = (p for p in @patterns when p.isMatch(currentPath))
-    resolvedPaths = (pattern.getResults(currentPath) for pattern in matches)
-    flatMatches = [].concat((resolvedPaths)...)
+    results = []
+    for p in @patterns
+      if not p.isMatch(currentPath)
+        continue
+
+      for output in p.outputs
+        outputPath = output.execute(currentPath)
+
+        if output.isCreate()
+          expandedPath = path.join(root, outputPath)
+
+          results.push(q([
+            PathMatcher.parsePathResult(
+              expandedPath,
+              fs.existsSync(expandedPath) and fs.statSync(expandedPath).isFile()
+            )]))
+        else
+          results.push(fsFilterMatches(root, outputPath).then((paths) ->
+            (PathMatcher.parsePathResult(fsPath, true) for fsPath in paths)
+          ))
 
     q.all(
-      [].concat((fsFilterMatches(root, match) for match in flatMatches)...)
+      results
     ).then((results) ->
       # Flatten the results of q.all into a single array
       [].concat(results...)

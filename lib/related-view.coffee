@@ -1,22 +1,32 @@
 {SelectListView} = require('atom-space-pen-views')
 
+_existsTemplate = (item) ->
+  """
+  <li>
+    <div>#{item.fileName}</div>
+    <div><small>#{item.fsPath}</small></div>
+  </li>
+  """
+_createTemplate = (item) ->
+  """
+  <li>
+    <div>Create #{item.fileName}</div>
+    <div><small>#{item.fsPath}</small></div>
+  </li>
+  """
+
 class RelatedViewSelect extends SelectListView
   initialize: (@pathMatcher) ->
     super
     @addClass('overlay from-top')
 
   viewForItem: (item) ->
-    """
-    <li>
-      <div>#{item.displayPath}</div>
-      <div><small>#{item.realPath}</small></div>
-    </li>
-    """
+    if item.exists then _existsTemplate(item) else _createTemplate(item)
 
   confirmed: (item) ->
     @cancel()
 
-    atom.workspace.open(item.realPath)
+    atom.workspace.open(item.fsPath)
 
   getFilterKey: ->
     'displayPath'
@@ -44,9 +54,6 @@ class RelatedViewSelect extends SelectListView
       if filename.indexOf(pathName) >= 0
         return pathName
 
-  processItem: (item) ->
-    return displayPath: path.basename(item), realPath: item
-
   populate: ->
     currentPath = atom.workspace.getActiveTextEditor().getPath()
     if currentPath
@@ -54,13 +61,20 @@ class RelatedViewSelect extends SelectListView
       newPath = path.relative(root, currentPath)
 
       return @pathMatcher.findMatches(root, newPath).then((items) =>
-        matches = (@processItem(item) for item in items)
+        createItems = (item for item in items when not item.exists)
+        existingItems = (item for item in items when item.exists)
 
-        if (matches.length is 1 and atom.config.get('related.openSingleItemAutomatically'))
-          @confirmed(matches[0])
+        # Remove the create items if we have existing results
+        if existingItems.length > 0 and atom.config.get('related.onlyShowCreateIfNoResults')
+          items = existingItems
+
+        items = items.sort((a, b) -> (not a.exists - not b.exists))
+
+        if (items.length is 1 and atom.config.get('related.openSingleItemAutomatically'))
+          @confirmed(items[0])
           return false
         else
-          @setItems(matches)
+          @setItems(items)
           return true
       )
 

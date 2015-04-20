@@ -10,6 +10,10 @@ class Related
       type: 'boolean'
       default: false
       description: 'If only a single file matches, automatically open that item instead of prompting'
+    onlyShowCreateIfNoResults:
+      type: 'boolean'
+      default: false
+      description: 'Only offer to create files if there are no pre-existing results'
 
   subscriptions: null
   pathMatcher: null

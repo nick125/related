@@ -15,9 +15,23 @@ provides a mapping from a CoffeeScript file (through a **matcher**) in lib/ to a
 will show it as a file to jump to. Each pattern can have multiple results, and a single file
 can match multiple patterns.
 
+### Creating files
+Related allows you to optionally create related files by specifying the 'create' flag at the end of your result. For example,
+with the currently open file "lib/foo.coffee",
+```cson
+"lib/(.+).coffee": [
+  "spec/$1-spec.coffee#create"
+]
+```
+would prompt you to create "spec/foo-spec.coffee" if it doesn't already exist.
+
 ## Keymapping
 By default, Related uses ctrl+shift+r.
 
 ## Configuration
 Related doesn't come with a default pattern set, but there are some examples in the examples/ directory. To add a pattern,
 see the "Edit related patterns" options under the Packages -> Related menu.
+
+Related provides the following configuration options:
+ * openSingleItemAutomatically - If only a single existing file matches the pattern, automatically open it instead of prompting
+ * onlyShowCreateIfNoResults - Only offer to create files if there are no other existing results.
