@@ -1,7 +1,8 @@
 # Related for Atom
 Related is a port of the [sublime-related-files](https://github.com/fabiokr/sublime-related-files) plugin for Atom.
 
-Related provides a quick way to access files that are "related" to the file currently opened.
+Related provides a quick way to access files that are "related" to the file currently opened. For example, Related includes
+a set of patterns for switching between C/C++/Objective-C source and header files.
 
 ## What is a "related" file?
 The relationship between files is defined through a set of **patterns**. For example,
@@ -29,7 +30,7 @@ would prompt you to create "spec/foo-spec.coffee" if it doesn't already exist.
 By default, Related uses ctrl+shift+r.
 
 ## Configuration
-Related doesn't come with a default pattern set, but there are some examples in the examples/ directory. To add a pattern,
+Related includes a limited default pattern set, but there are some additional examples in the examples/ directory. To add a pattern,
 see the "Edit related patterns" options under the Packages -> Related menu.
 
 Related provides the following configuration options:
