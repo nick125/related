@@ -2,7 +2,7 @@
   "name": "related",
   "main": "./lib/related",
   "version": "0.3.1",
-  "description": "Navigate quickly between related files in your project",
+  "description": "Navigate quickly between files in your project, such as header/source files, based on a set of configurable rules",
   "activationCommands": {
     "atom-workspace": [
       "related:show-related-files",
