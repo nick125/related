@@ -4,6 +4,8 @@ Related is a port of the [sublime-related-files](https://github.com/fabiokr/subl
 Related provides a quick way to access files that are "related" to the file currently opened. For example, Related includes
 a set of patterns for switching between C/C++/Objective-C source and header files.
 
+![Related in action](https://raw.githubusercontent.com/nick125/related/master/related.gif)
+
 ## What is a "related" file?
 The relationship between files is defined through a set of **patterns**. For example,
 ```cson
