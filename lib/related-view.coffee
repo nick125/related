@@ -51,9 +51,9 @@ class RelatedViewSelect extends SelectListView
       )
 
   getRoot: (filePath, rootPaths) ->
-    rootPaths = ("#{rootPath}/" for rootPath in rootPaths)
+    rootPaths = ("#{rootPath}#{path.sep}" for rootPath in rootPaths)
 
-    until rootPaths.indexOf("#{filePath}/") >= 0
+    until rootPaths.indexOf("#{filePath}#{path.sep}") >= 0
       filePath = path.dirname(filePath)
 
     return filePath
