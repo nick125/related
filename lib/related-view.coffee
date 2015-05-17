@@ -1,4 +1,5 @@
 {SelectListView} = require('atom-space-pen-views')
+path = require('path')
 
 _existsTemplate = (item) ->
   """
@@ -49,10 +50,13 @@ class RelatedViewSelect extends SelectListView
         @show() if shouldShow
       )
 
-  getRoot: (filename, paths) ->
-    for pathName in paths
-      if filename.indexOf(pathName) >= 0
-        return pathName
+  getRoot: (filePath, rootPaths) ->
+    rootPaths = ("#{rootPath}/" for rootPath in rootPaths)
+
+    until rootPaths.indexOf("#{filePath}/") >= 0
+      filePath = path.dirname(filePath)
+
+    return filePath
 
   populate: ->
     currentPath = atom.workspace.getActiveTextEditor().getPath()
