@@ -7,7 +7,7 @@ fixPath = (orig, regex) ->
   sep = if regex then path.sep.replace('\\', '\\\\') else path.sep
   orig.replace(/\//g, sep)
 
-qglob = q.nfbind(glob.glob)
+qglob = q.denodeify(glob.glob)
 
 class OutputPattern
   @patternParse: /([^#]+)#?(.*)/
