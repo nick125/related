@@ -27,7 +27,7 @@ class RelatedViewSelect extends SelectListView
   confirmed: (item) ->
     @cancel()
 
-    atom.workspace.open(item.fsPath)
+    atom.workspace.open(item.fsPath, { searchAllPanes: true })
 
   getFilterKey: ->
     'displayPath'
